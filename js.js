@@ -18,15 +18,31 @@ const getCountryInfo = async (event) => {
             const res = await fetch(`https://restcountries.com/v3.1/name/${country}`);
             const data = await res.json();
             console.log(data);
+            //jei response 404, pranesk useriui, kad salis nerasta
+            if (data.status === 404) {
+                //trinu senus duomenis 
+                const countries = document.querySelectorAll('.one_country_info');
+                //console.log(countries);
+                for (let i = 0; i < countries.length; i++) {
+                    console.log(countries[i])
+                    countries[i].remove();
+                }
+                const one_country_info = document.createElement('div');
+                one_country_info.className = 'one_country_info card row d-flex justify-content-center mt-4';
+                one_country_info.textContent = `Country ${data.message}`;
+                document.querySelector('.container').appendChild(one_country_info);
+                return;
+            }
             //tikrinti, ar salies info jau yra, pasalinti sena informacija   
             if (document.querySelector('.one_country_info') != undefined) {
                 const countries = document.querySelectorAll('.one_country_info');
-                console.log(countries);
+                //console.log(countries);
                 for (let i = 0; i < countries.length; i++) {
                     console.log(countries[i])
                     countries[i].remove();
                 }
             }
+
             //jei gauciau response daugiau ne viena sali
             data.map(one_country => {
                 const one_country_info = document.createElement('div');
@@ -42,12 +58,12 @@ const getCountryInfo = async (event) => {
        
         </div>
         `
-                document.querySelector('.container').appendChild(one_country_info)
+                document.querySelector('.container').appendChild(one_country_info);
             })
         } catch (error) {
             console.log(error);
         }
     }
-    }
+}
 
-    my_button.addEventListener('click', getCountryInfo);
+my_button.addEventListener('click', getCountryInfo);
